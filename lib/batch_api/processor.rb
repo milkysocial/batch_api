@@ -74,6 +74,7 @@ module BatchApi
     # Returns an array of BatchApi::Operation objects
     def process_ops
       ops = @request.params.delete("ops")
+      ops = JSON.parse(ops).map! { |hash| HashWithIndifferentAccess.new(hash) } if ops.is_a?(String)      
       if !ops || ops.empty?
         raise Errors::NoOperationsError, "No operations provided"
       elsif ops.length > BatchApi.config.limit
